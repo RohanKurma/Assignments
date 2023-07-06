@@ -17,72 +17,147 @@ Write a function named rect_circle_overlap that takes a Circle and a Rectangle a
 SOLUTION:
 
 class Circle:
-    def __init__(self, c, r):
-        self.c = c
-        self.r = r
+    """ This Circle class takes the coordinates of the center as a Point object
+    and the radius of the cirlce.
+    It represents the data structure of the circle with
+    entries: center and radius
+    """
+
+    def __init__(self, center, radius):
+
+        self.center = center
+        self.radius = radius
 
 class Point:
-    def __init__(self, x=0,y=0):
-        self.x = x
-        self.y = y
+    """ This Point class takes the coordinates of x-axis and y-axis.
+    It acts as a datastructure to represent a point.
+    """
+
+    def __init__(self, x_axis, y_axis):
+
+        self.x = x_axis
+        self.y = y_axis
 
 class Rectangle:
-    def __init__(self, cor1=0, cor2=0, cor3=0, cor4=0):
+    """ This Rectangle class takes four vertices of the rectangle.
+    This class doesn't take any angle consideration or base lenght
+    or breadth to support angle between edges.
+    It simply holds vertexes of the rectangle.
+    Because in coordinate geometry it's difficult to automate to obtain the
+    vertices of a rectangle without giving its trignometry and base values of
+    length and breadth. This is a best approach.
 
-        self.__cor1 = cor1
-        self.__cor2 = cor2
-        self.__cor3 = cor3
-        self.__cor4 = cor4
+    """
+
+    def __init__(self, vertex1, vertex2, vertex3, vertex4):
+        self.v1 = vertex1
+        self.v2 = vertex2
+        self.v3 = vertex3
+        self.v4 = vertex4
 
 
-def rect_in_circle(Circle, Rectangle):
-    c = Circle.c
-    r = Circle.r
-    
+def point_in_circle(point, circle):
+    """ This function point_in_circle, returns True if the point lies inside the
+    circle. False otherwise.
+
+    input:
+    point--> Point Object
+    circle--> Circle Object.
+
+    output:
+    True --> Point inside the circle
+    False --> Point outside the circle
+
+    """
+    # This is the distance formular derived from
+    # d=√((x2 – x1)² + (y2 – y1)²) and √x2+y2=r
+    # The above formulas results the distance between two points and the
+    # relation between center, external point and the radius.
+
+    distance = (point.x - circle.center.x) ** 2 + (point.y - circle.center.y) ** 2
+
+    if distance <= circle.radius**2:
+        return True
+
+    else:
+        return False
+
+def rect_in_circle(rectangle, circle):
+    """ This function tells us whether a rectangle is in the circle or not.
+    input:
+    rectangle: Rectangle Object
+    circle: Circle Object
+
+    output:
+    True --> If the rectangle is in the circle.
+    False--> If the rectangle is not in the circle.
+
+    """
+    # We use a list called result, which stores the status of all the four
+    # vertices of the rectangle are in the circle or not. True if it passes
+    # and False otherwise.
     result = []
-
-    for k, v in vars(rect1).items():
-
-        dist = (c.x - v.x)**2 + (c.y - v.y)**2
-        if dist <= r**2:
-            result.append(True)
-        else:
-            result.append(False)
-            
-            
+    # Here we iterate the rectangle object on its vertices using vars() method.
+    # vars(object) returns the dictionary of the constructor variables as keys
+    # and the values of the variables are values.
+    # Since we only need the values to be checked, we use values of this
+    # dictionary.
+    for v in vars(rectangle).values():
+        # Here we pass every vertex of the rectangle to the point_in_circle()
+        # function to verify whether the point lies in the circle or not.
+        # Once after verifying the point, the return value is appended to the
+        # list result.
+        result.append(point_in_circle(v, circle))
+    # After getting the list result, we check that
+    # If all values of the result are True, it clearly states that no point of
+    # the rectangle vertices lies outside the circle. Hence the rectangle is
+    # inside the circle. So we return True.
     if all(result):
         return True
-
     else:
         return False
-        
-def rect_circle_overlap(Circle,Rectangle):
-    c = Circle.c
-    r = Circle.r
 
-    result =[]
+def rect_circle_overlap(rectangle, circle):
+    """ This function tells us whether a rectangle overlaps a circle or not.
+    input:
+    rectangle: Rectangle Object.
+    circle: Circle Object.
 
-    for k, v in vars(rect1).items():
+    output:
+    True --> If the rectangle overlaps the circle.
+    False --> If the rectangle doesn't overlap the circle.
 
-        dist = (c.x - v.x)**2 + (c.y - v.y)**2
-        if dist <= r**2:
-            result.append(True)
-        else:
-            result.append(False)
-    if any(result):
+    """
+
+    # We use a list called result, which stores the status of all the four
+    # vertices of the rectangle are in the circle or not. True if it passes
+    # and False otherwise.
+    result = []
+    # Here we iterate the rectangle object on its vertices using vars() method.
+    # vars(object) returns the dictionary of the constructor variables as keys
+    # and the values of the variables are values.
+    # Since we only need the values to be checked, we use values of this
+    # dictionary.
+    for v in vars(rectangle).values():
+
+        result.append(point_in_circle(v, circle))
+    # If any of the result contains False, it means that the rectangle is
+    # definetly overlapping the circle. So it returns True.
+    if any(result) == False:
         return True
-
     else:
         return False
-        
-circle = Circle
-circle.c = Point
-circle.c.x = 150.0
-circle.c.y = 100.0
-circle.r = 75.0
 
-rect1 = Rectangle(Point(150,100),Point(150,100),Point(120,90),Point(12,100))
-        
-print(rect_in_circle(circle, rect1))
-print(rect_circle_overlap(circle, rect1))
+if __name__ == '__main__':
 
+    box = Rectangle(Point(50.0,50.0), Point(50.0,0.0), Point(0.0, 50.0),Point(0.0,0.0))
+
+    circle = Circle(Point(150.0, 100.0), 75.0)
+
+    print(circle.center.x)
+    print(circle.center.y)
+    print(circle.radius)
+
+    print(point_in_circle(box.v1, circle))
+    print(rect_in_circle(box, circle))
+    print(rect_circle_overlap(box, circle))
